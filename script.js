@@ -1,7 +1,5 @@
-const buttons = ['add', 'delete', 'refresh'];
-let shelf = [];
-
 function startUp(){
+    const buttons = ['add', 'delete', 'refresh'];
     buttons.forEach((name)=>{
         const button = document.createElement("button");
         button.type = "button";
@@ -10,36 +8,52 @@ function startUp(){
         document.getElementById("buttonBar").appendChild(button);
     })
 }
-Book.prototype{
-    this.addToShelf = function(){
+startUp();
+let shelf = [];
+let shelfMap = [];
+const addButton = document.getElementById('add');
+const delButton = document.getElementById('delete');
+const formDialog = document.getElementById('formAdd');
+const formAdd = document.getElementById('bookAdd');
+
+const bookPrototype = {
+    addToShelf : function() {
         shelf.push(this);
-    }
-    this.delFromShelf = function(){
-        shelf.pop(this);
+    },
+    delFromShelf : function(){
+        const index = shelf.indexOf(this);
+        shelf.splice(index, 1)
     }
 }
 
 function Book(title, author, year){
     this.title = title;
     this.author = author;
-    this.year = year;
-    // use prototype for a function
-    
+    this.year = year;    
 }
 
+Object.assign(Book.prototype, bookPrototype);
+
+function addBook(){
+    //
+}
+function delBook(){
+    //
+}
 function refreshShelf(){
+    document.getElementById("bookShelf").replaceChildren();
     shelf.forEach((book, index)=>{
-        console.log(book);
         let bookId = `book${index}`;
         let card = document.createElement("div");
         card.setAttribute('class', 'book');
         card.setAttribute('id', `${bookId}`);
+        document.getElementById("bookShelf").appendChild(card);
+        console.log(bookId);
         for (let prop in book){
-            if (book.hasOwnProperty(prop) && !(prop instanceof Function)){
-                console.log(prop);
+            if (book.hasOwnProperty(prop)){
                 let properties = document.createElement("p");
                 properties.innerText = book[prop];
-                document.getElementById("bookShelf").appendChild(properties);
+                document.getElementById(`${bookId}`).appendChild(properties);
 
             }
         }
@@ -47,8 +61,31 @@ function refreshShelf(){
     })
 }
 
-startUp();
-let dune = new Book('dune', 'herbert', 1963);
-dune.prototype.addToShelf();
-refreshShelf();
+//button behaviour
+
+addButton.addEventListener('click', () => {
+    formDialog.showModal();
+}  )
+formAdd.addEventListener('submit', (event) =>{
+    event.preventDefault();
+    let title = formAdd.elements.namedItem("title").value;
+    let author = formAdd.elements.namedItem('author').value;
+    let year = formAdd.elements.namedItem('year').value;
+    shelfMap.push(title);
+
+    const book = new Book(`${title}`, `${author}`, `${year}`);
+    book.addToShelf();
+    formDialog.close();
+    console.log(shelf);
+    refreshShelf();
+    formAdd.reset();
+})
+
+delButton.addEventListener('click', () =>{
+    shelf.splice((shelf.length - 1), 1);
+    refreshShelf();
+})
+
+
+
 

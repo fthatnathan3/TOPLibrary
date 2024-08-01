@@ -1,0 +1,16 @@
+#bookShelf{
+    display: flex;
+    flex-direction: row;
+}
+.book {
+    display: flex;
+    color: #fe8a8a;
+    border: black 1px solid;
+    flex-direction: column;
+    margin: 5px 5px 5px;
+    padding: 5px 5px 5px 5px
+
+}
+#buttonBar{
+    display: flex;
+}
